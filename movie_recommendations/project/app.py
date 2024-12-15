@@ -5,17 +5,6 @@ import numpy as np
 app = Flask(__name__)
 
 # Load data
-"""
-similarity_matrix = pd.read_csv('filtered_similarity_matrix.csv', index_col=0)
-rating_matrix = pd.read_csv('rating_matrix.csv', index_col=0)
-popularity_ranking = pd.read_csv('popularity_ranking.csv', index_col=0)
-
-
-# Select the top 100 most rated movies globally
-most_rated_movies = rating_matrix.notna().sum().sort_values(ascending=False).head(100).index
-sample_movies = list(most_rated_movies)
-
-"""
 
 # Global initialization (outside of myIBCF)
 movie_metadata = pd.read_csv('movie_metadata.csv')
