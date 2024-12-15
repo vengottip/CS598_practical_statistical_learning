@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .movie-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .movie-card {
+            width: 200px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+        }
+        .movie-poster {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .movie-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .rating-stars input {
+            display: none;
+        }
+        .rating-stars label {
+            font-size: 20px;
+            color: #ccc;
+            cursor: pointer;
+        }
+        .rating-stars label:hover,
+        .rating-stars label:hover ~ label {
+            color: #f5c518;
+        }
+        .rating-stars input:checked + label,
+        .rating-stars input:checked + label ~ label {
+            color: #f5c518;
+        }
+        .recommendation-container {
+            margin-top: 30px;
+        }
+        .recommendation-card {
+            width: 200px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .recommendation-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.rating-stars input');
+            stars.forEach(star => {
+                star.addEventListener('change', function() {
+                    const name = this.name;
+                    const value = this.value;
+                    const starInputs = document.querySelectorAll(`input[name="${name}"]`);
+                    starInputs.forEach(input => {
+                        const label = input.nextElementSibling;
+                        if (input.value <= value) {
+                            label.style.color = '#f5c518';
+                        } else {
+                            label.style.color = '#ccc';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    <div id="error-message">
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
+    </div>
+    {% if recommendations %}
+    <div class="recommendation-container">
+        <h2>Recommended Movies</h2>
+        <div class="movie-container">
+            {% for rec in recommendations %}
+            <div class="recommendation-card">
+                <div class="recommendation-title">{{ rec.MovieID }}</div>
+                <p>Predicted Rating: {{ rec.PredictedRating }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    <h1>Rate These Movies</h1>
+    <p>Rate movies below and click the button to get top 10 movie recommendations above</p> <!-- Added instructions -->
+    <form method="POST">
+        <button type="submit">Click here to get your recommendations</button>
+        <div class="movie-container">
+            {% for movie in movies %}
+            <div class="movie-card">
+                <img src="{{ movie.PosterURL }}" alt="{{ movie.Title }}" class="movie-poster">
+                <div class="movie-title">{{ movie.Title }}</div>
+                <div class="rating-stars">
+                    <input type="radio" id="{{ movie.MovieID }}-1" name="{{ movie.MovieID }}" value="1">
+                    <label for="{{ movie.MovieID }}-1">&#9733;</label>
+                    <input type="radio" id="{{ movie.MovieID }}-2" name="{{ movie.MovieID }}" value="2">
+                    <label for="{{ movie.MovieID }}-2">&#9733;</label>
+                    <input type="radio" id="{{ movie.MovieID }}-3" name="{{ movie.MovieID }}" value="3">
+                    <label for="{{ movie.MovieID }}-3">&#9733;</label>
+                    <input type="radio" id="{{ movie.MovieID }}-4" name="{{ movie.MovieID }}" value="4">
+                    <label for="{{ movie.MovieID }}-4">&#9733;</label>
+                    <input type="radio" id="{{ movie.MovieID }}-5" name="{{ movie.MovieID }}" value="5">
+                    <label for="{{ movie.MovieID }}-5">&#9733;</label>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+    </form>
+
+    
+</body>
+</html>
