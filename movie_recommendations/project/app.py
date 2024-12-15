@@ -139,4 +139,7 @@ def index():
 
 
 if __name__ == '__main__':
+    import os
+    port = int(os.environ.get("PORT", 5000))  # Use PORT environment variable if provided
+    app.run(host='0.0.0.0', port=port, debug=True)  # Bind to 0.0.0.0 to allow external access
     app.run(debug=True)
