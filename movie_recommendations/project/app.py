@@ -5,15 +5,22 @@ import numpy as np
 app = Flask(__name__)
 
 # Load data
+"""
 similarity_matrix = pd.read_csv('filtered_similarity_matrix.csv', index_col=0)
 rating_matrix = pd.read_csv('rating_matrix.csv', index_col=0)
 popularity_ranking = pd.read_csv('popularity_ranking.csv', index_col=0)
-movie_metadata = pd.read_csv('movie_metadata.csv')
+
 
 # Select the top 100 most rated movies globally
 most_rated_movies = rating_matrix.notna().sum().sort_values(ascending=False).head(100).index
 sample_movies = list(most_rated_movies)
 
+"""
+
+# Global initialization (outside of myIBCF)
+movie_metadata = pd.read_csv('movie_metadata.csv')
+most_rated_movies = pd.read_csv('most_rated_movies.csv', index_col=0).index
+sample_movies = list(most_rated_movies)
 
 def myIBCF(newuser):
     """
@@ -33,18 +40,16 @@ def myIBCF(newuser):
                 "Ratings must be NA or integers 1, 2, 3, 4, or 5."
             )
 
-    # Load similarity matrix, rating matrix, and popularity ranking internally
+    # Load similarity matrix and popularity ranking internally
     similarity_matrix = pd.read_csv('filtered_similarity_matrix.csv', index_col=0)
-    rating_matrix = pd.read_csv('rating_matrix.csv', index_col=0)
     popularity_ranking = pd.read_csv('popularity_ranking.csv', index_col=0)
 
-    # Select the top 100 movies with the most ratings
-    most_rated_movies = rating_matrix.notna().sum().sort_values(ascending=False).head(100).index
+    # Load most rated movies from preprocessed file
+    most_rated_movies = pd.read_csv('most_rated_movies.csv', index_col=0).index
     similarity_matrix = similarity_matrix.loc[most_rated_movies, most_rated_movies]
-    rating_matrix = rating_matrix[most_rated_movies]
 
     # Ensure newuser is a vector aligned with the selected movies
-    all_movies = rating_matrix.columns
+    all_movies = most_rated_movies
     if len(newuser) != len(all_movies):
         # Create a vector with NA for missing movies
         newuser_full = pd.Series(data=np.nan, index=all_movies)
@@ -87,17 +92,15 @@ def myIBCF(newuser):
         )
         top_predictions = pd.concat([top_predictions, additional_predictions])
 
-    # Return the top 10 recommendations as a DataFrame
+    # Return the top 10 recommendations as a DataFrame ordered by PredictedRating descending
     top_10_recommendations = pd.DataFrame({
         'MovieID': top_predictions.index,
         'PredictedRating': top_predictions.values.round(4)  # Round to 4 decimal places
-    }).reset_index(drop=True)
+    }).sort_values(by='PredictedRating', ascending=False).reset_index(drop=True)
 
     return top_10_recommendations
 
-# Update sample_movies to reflect the top 100 most rated movies globally
-most_rated_movies = rating_matrix.notna().sum().sort_values(ascending=False).head(100).index
-sample_movies = list(most_rated_movies)
+
 
 
 
