@@ -94,6 +94,9 @@
         <div class="movie-container">
             {% for rec in recommendations %}
             <div class="recommendation-card">
+                <img src="https://liangfgithub.github.io/MovieImages/{{ rec.MovieID[1:] }}.jpg" 
+                    alt="Movie Poster" 
+                    class="movie-poster">
                 <div class="recommendation-title">{{ rec.MovieID }}</div>
                 <p>Predicted Rating: {{ rec.PredictedRating }}</p>
             </div>
@@ -108,7 +111,7 @@
         <div class="movie-container">
             {% for movie in movies %}
             <div class="movie-card">
-                <img src="{{ movie.PosterURL }}" alt="{{ movie.Title }}" class="movie-poster">
+                <img src="https://liangfgithub.github.io/MovieImages/{{ movie.MovieID[1:] }}.jpg" alt="{{ movie.Title }}" class="movie-poster">
                 <div class="movie-title">{{ movie.Title }}</div>
                 <div class="rating-stars">
                     <input type="radio" id="{{ movie.MovieID }}-1" name="{{ movie.MovieID }}" value="1">
@@ -125,9 +128,6 @@
             </div>
             {% endfor %}
         </div>
-        
     </form>
-
-    
 </body>
 </html>
